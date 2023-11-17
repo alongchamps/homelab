@@ -11,7 +11,3 @@ Scripts for setting up HELK on top of ubuntu - starting with a bare VM
 >  `cd ~/github/HELK/docker`
 
 > `sudo docker-compose -f helk-kibana-notebook-analysis-alert-basic.yml stop`
-
-  git config --global user.email "you@example.com"
-  git config --global user.name "Your Name"
-  
