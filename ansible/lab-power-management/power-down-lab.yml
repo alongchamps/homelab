@@ -1,0 +1,10 @@
+
+- name: shut down HELK stack on ubuntu
+  cmd: sudo docker-compose -f ~/github/HELK/docker/helk-kibana-notebook-analysis-alert-basic.yml start
+
+- name: shut down all running VMs
+
+community.vmware.vmware_guest_powerstate supports state_change_timeout
+
+- name: shut down ESXi host
+

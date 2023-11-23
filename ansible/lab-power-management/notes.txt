@@ -1,0 +1,4 @@
+cd ansible/lab-power-management
+/opt/homebrew/Cellar/ansible/9.0.1/libexec/bin/python3 -m pip install -r requirements.txt
+
+ansible-playbook -i hosts.yml --limit esxi.homelab power-up-lab.yml
