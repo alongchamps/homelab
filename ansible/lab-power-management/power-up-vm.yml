@@ -1,0 +1,18 @@
+- name: power up VMs
+  community.vmware.vmware_guest_powerstate:
+    hostname: "vcsa.homelab"
+    username: "{{ vc_username }}"
+    password: "{{ vc_password }}"
+    validate_certs: false
+    name: "{{ item }}"
+    state: powered-on
+  delegate_to: localhost
+
+- name: wait for VMware tools to come up
+  community.vmware.vmware_guest_tools_wait:
+    hostname: "vcsa.homelab"
+    username: "{{ vc_username }}"
+    password: "{{ vc_password }}"
+    validate_certs: false
+    name: "{{ item }}"
+  delegate_to: localhost

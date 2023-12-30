@@ -15,6 +15,11 @@
       password: "{{ ilo_password }}"
       state: 'on'
     delegate_to: localhost
+  
+  - name: sleep 5 minutes
+    ansible.builtin.wait_for:
+      timeout: 300
+    delegate_to: localhost
 
   - name: wait for ESXi to respond on the network
     ansible.builtin.uri:
@@ -24,19 +29,22 @@
       status_code:
         - 200
     until: uri_output.status == 200
-    retries: 24 # Retries for 24 * 5 seconds = 120 seconds = 2 minutes
-    delay: 30 # Every 5 seconds
+    retries: 24
+    delay: 30
     register: uri_output
     delegate_to: localhost
 
   - name: wait for ESXi services to come online
-    community.vmware.vmware_vm_info:
+    community.vmware.vmware_host_facts:
       validate_certs: false
-      hostname: "esxi.homelab"
+      hostname: "{{ inventory_hostname }}"
       username: "{{ esxi_username  }}"
       password: "{{ esxi_password }}"
+    until: "host_info is not failed"
+    retries: 24
+    delay: 30
     delegate_to: localhost
-    register: all_vms
+    register: host_info
 
   - name: power up vCenter
     community.vmware.vmware_guest_powerstate:
@@ -58,7 +66,7 @@
       name: "vcsa.homelab"
     delegate_to: localhost
   
-  - name: wait for vCenter to not return 503
+  - name: wait for vCenter to return HTTP 200 on / 
     ansible.builtin.uri:
       url: "https://vcsa.homelab"
       return_content: true
@@ -66,23 +74,15 @@
       status_code:
         - 200
     until: uri_output.status == 200
-    retries: 24 # Retries for 24 * 5 seconds = 120 seconds = 2 minutes
-    delay: 30 # Every 5 seconds
+    retries: 24
+    delay: 30
     register: uri_output
     delegate_to: localhost
 
   - name: power up VMs
-    community.vmware.vmware_guest_powerstate:
-      hostname: "vcsa.homelab"
-      username: "{{ vc_username }}"
-      password: "{{ vc_password }}"
-      validate_certs: false
-      name: "{{ item }}"
-      state: powered-on
-    register: vcsa_power_on
-    delegate_to: localhost
+    ansible.builtin.include_tasks:
+      file: power-up-vm.yml
     loop:  
-      - dc01
       - opnsense
-      - pth1
+      - dc01
       - ubuntu01
