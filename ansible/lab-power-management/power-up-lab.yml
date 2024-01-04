@@ -8,67 +8,67 @@
   gather_facts: false
 
   tasks:
-  # - name: check/wait for iLO to be online
-  #   ansible.builtin.uri:
-  #     url: "https://ilo.homelab"
-  #     return_content: true
-  #     validate_certs: false
-  #     status_code:
-  #       - 200
-  #   until: uri_output.status == 200
-  #   retries: 24
-  #   delay: 30
-  #   register: uri_output
-  #   delegate_to: localhost
+  - name: check/wait for iLO to be online
+    ansible.builtin.uri:
+      url: "https://ilo.homelab"
+      return_content: true
+      validate_certs: false
+      status_code:
+        - 200
+    until: uri_output.status == 200
+    retries: 24
+    delay: 30
+    register: uri_output
+    delegate_to: localhost
 
-  # - name: power on ESXi host via iLO
-  #   community.general.ipmi_power:
-  #     name: ilo.homelab
-  #     user: "{{ ilo_username }}"
-  #     password: "{{ ilo_password }}"
-  #     state: 'on'
-  #   delegate_to: localhost
+  - name: power on ESXi host via iLO
+    community.general.ipmi_power:
+      name: ilo.homelab
+      user: "{{ ilo_username }}"
+      password: "{{ ilo_password }}"
+      state: 'on'
+    delegate_to: localhost
   
-  # - name: sleep 5 minutes
-  #   ansible.builtin.wait_for:
-  #     timeout: 300
-  #   delegate_to: localhost
+  - name: sleep 5 minutes
+    ansible.builtin.wait_for:
+      timeout: 300
+    delegate_to: localhost
 
-  # - name: wait for ESXi to respond on the network
-  #   ansible.builtin.uri:
-  #     url: "https://esxi.homelab"
-  #     return_content: true
-  #     validate_certs: false
-  #     status_code:
-  #       - 200
-  #   until: uri_output.status == 200
-  #   retries: 24
-  #   delay: 30
-  #   register: uri_output
-  #   delegate_to: localhost
+  - name: wait for ESXi to respond on the network
+    ansible.builtin.uri:
+      url: "https://esxi.homelab"
+      return_content: true
+      validate_certs: false
+      status_code:
+        - 200
+    until: uri_output.status == 200
+    retries: 24
+    delay: 30
+    register: uri_output
+    delegate_to: localhost
 
-  # - name: wait for ESXi services to come online
-  #   community.vmware.vmware_host_facts:
-  #     validate_certs: false
-  #     hostname: "{{ inventory_hostname }}"
-  #     username: "{{ esxi_username  }}"
-  #     password: "{{ esxi_password }}"
-  #   until: "host_info is not failed"
-  #   retries: 24
-  #   delay: 30
-  #   delegate_to: localhost
-  #   register: host_info
+  - name: wait for ESXi services to come online
+    community.vmware.vmware_host_facts:
+      validate_certs: false
+      hostname: "{{ inventory_hostname }}"
+      username: "{{ esxi_username  }}"
+      password: "{{ esxi_password }}"
+    until: "host_info is not failed"
+    retries: 24
+    delay: 30
+    delegate_to: localhost
+    register: host_info
 
-  # - name: power up vCenter
-  #   community.vmware.vmware_guest_powerstate:
-  #     hostname: "esxi.homelab"
-  #     username: "{{ esxi_username }}"
-  #     password: "{{ esxi_password }}"
-  #     validate_certs: false
-  #     name: "vcsa.homelab"
-  #     state: powered-on
-  #   register: vcsa_power_on
-  #   delegate_to: localhost
+  - name: power up vCenter
+    community.vmware.vmware_guest_powerstate:
+      hostname: "esxi.homelab"
+      username: "{{ esxi_username }}"
+      password: "{{ esxi_password }}"
+      validate_certs: false
+      name: "vcsa.homelab"
+      state: powered-on
+    register: vcsa_power_on
+    delegate_to: localhost
   
   - name: wait for VMware tools to come up
     community.vmware.vmware_guest_tools_wait:
