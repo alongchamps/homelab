@@ -6,3 +6,4 @@ terraform.tfvars
 ansible-creds.txt
 hosts.yml
 .vscode/**
+./ansible/lab-power-management/power-down-lab.yml

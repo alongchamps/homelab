@@ -1,4 +1,4 @@
-# playbook to power on ESXi, start vCenter, and associated VMs
+# playbook to power on ESXi, start vCenter, and some VMs
 
 # As of now, I only have one environment setup in here, but in 
 # the future I might use labels/tags to power up certain things.
@@ -96,8 +96,9 @@
     ansible.builtin.include_tasks:
       file: power-up-vm.yml
     loop:  
+      - kprimary
       - opnsense
       - dc01
-      - ubuntu01
+      - dc02
       - connector01
       - appproxy01
